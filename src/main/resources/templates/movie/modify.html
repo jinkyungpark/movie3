@@ -1,0 +1,89 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}">
+<th:block layout:fragment="css">
+  <link rel="stylesheet" th:href="@{/css/upload.css}">
+</th:block>
+<div layout:fragment="content" class="container px-6 mx-auto grid">
+  <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">[[${movieDTO.title}]]</h2>
+
+  <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+    <form th:action="@{modify}" method="post" id="register-form">
+      <!-- 수정 / 삭제를 위한 필요 정보 -->
+      <input type="hidden" name="mno" th:value="${movieDTO.mno}">      
+
+      <label class="block text-sm">
+        <span class="text-gray-700 dark:text-gray-400">제목</span>
+        <input
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="영화 제목" name="title" th:value="${movieDTO.title}" readonly />
+      </label>
+
+      <label class="block text-sm mt-4">
+        <span class="text-gray-700 dark:text-gray-400">리뷰 수</span>
+        <input
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="영화 제목" name="title" th:value="${movieDTO.reviewCnt}" readonly />
+      </label>
+
+      <label class="block text-sm mt-4">
+        <span class="text-gray-700 dark:text-gray-400">평균 평점</span>
+        <input
+          class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          placeholder="영화 제목" name="title" th:value="${movieDTO.avg}" readonly />
+      </label>
+
+      <!-- 포스터 수정 할 수 있도록 제공-->
+      <label class="block mt-4 text-sm form-label">
+        <span class="block text-gray-700 dark:text-gray-400"> Image Files </span>
+        <input type="file"
+          class="block w-full mt-1 form-control text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+          id="fileInput" multiple />
+      </label>
+
+      <div class="flex flex-col flex-wrap mb-8 space-y-4 md:flex-row md:items-end md:space-x-5">
+        <button sec:authorize="hasRole('ADMIN')"
+          class="btn btn-success flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white">
+          <span>수정</span>
+        </button>
+        <div class="mx-1">
+          <button type="button" sec:authorize="hasRole('ADMIN')"
+            class="btn btn-danger flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white">삭제</button>
+        </div>
+        <div>
+          <a th:href="@{/movie/list(page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})}">
+            <button type="button"
+              class="btn btn-primary flex items-center justify-between px-4 py-2 text-sm font-medium leading-5 text-white">목록</button>
+          </a>
+        </div>
+      </div>
+    </form>
+
+    <div class="uploadResult mt-4">
+      <!-- 기존에 이미 있는 포스터 보여주기 + 포스터 수정-->
+      <ul>
+        <li th:each="movieImage : ${movieDTO.movieImages}"
+          th:attr="data-name=${movieImage.getImgName()}, data-path=${movieImage.getPath()}, data-uuid=${movieImage.getUuid()}">
+          <div>
+            <a href="">
+              <img th:if="${movieImage.path != null}"
+                th:src="|/upload/display?fileName=${movieImage.getThumbnailURL()}|" class="block">
+            </a>
+            <span class="text-sm d-inline-block mx-1">[[${movieImage.imgName}]]</span>
+            <a href="#">
+              <i class="fa-solid fa-xmark"></i>
+            </a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script>
+      const csrfValue = '[[${ _csrf.token }]]';
+    </script>
+    <script th:src="@{/js/upload.js}"></script>
+    <script th:src="@{/js/modify.js}"></script>
+  </th:block>
+</div>
+
+</html>

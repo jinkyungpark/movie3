@@ -1,0 +1,78 @@
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layouts/layout}">
+<th:block layout:fragment="css">
+
+</th:block>
+
+<div class="flex items-center p-6 bg-gray-50 dark:bg-gray-900" layout:fragment="content" style="min-height: 80vh">
+    <div class="flex-1 h-full max-w-4xl mx-auto overflow-hidden bg-white rounded-lg shadow-xl dark:bg-gray-800">
+        <div class="flex flex-col overflow-y-auto md:flex-row">
+            <div class="h-32 md:h-auto md:w-1/2">
+                <img aria-hidden="true" class="object-cover w-full h-full dark:hidden"
+                    th:src="@{/assets/img/forgot-password-office.jpeg}" alt="Office" />
+                <img aria-hidden="true" class="hidden object-cover w-full h-full dark:block"
+                    th:src="@{/assets/img/forgot-password-office-dark.jpeg}" alt="Office" />
+            </div>
+            <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
+                <div class="w-full">
+                    <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+                        Edit profile
+                    </h1>
+                    <form th:action="@{/member/edit/nickname}" method="post">
+                        <label class="block mt-4 text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">
+                                닉네임
+                            </span>
+                            <input
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="닉네임" type="text" name="nickname" />
+                        </label>
+
+                        <input type="hidden" name="email" th:value="${#authentication.name}">
+                        <button
+                            class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                            type="submit">
+                            닉네임 수정
+                        </button>
+                    </form>
+
+                    <hr class="my-8" />
+
+                    <form th:action="@{/member/edit/password}" method="post">
+                        <input type="hidden" name="email" th:value="${#authentication.name}">
+                        <label class="block mt-4 text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">
+                                현재 비밀번호
+                            </span>
+                            <input
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="비밀번호" type="password" name="currentPassword" />
+                        </label>
+                        <!-- <div class="text-danger small" th:if="${param.error}">현재 비밀번호가 다릅니다.</div> -->
+                        <div class="text-danger small" th:if="${error}" th:text="${error}"></div>
+                        <label class="block mt-4 text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">
+                                변경 비밀번호
+                            </span>
+                            <input
+                                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                placeholder="변경 비밀번호" type="password" name="newPassword" />
+                        </label>
+
+
+                        <!-- You should use a button here, as the anchor is only used for the example  -->
+                        <button
+                            class="block w-full px-4 py-2 mt-4 text-sm font-medium leading-5 text-center text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+                            type="submit">
+                            비밀번호 수정
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<th:block layout:fragment="script">
+</th:block>
+
+</html>

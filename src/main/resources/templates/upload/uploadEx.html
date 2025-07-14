@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <input type="file" name="uploadFiles" id="" multiple />
+    <button class="uploadBtn">업로드</button>
+    <div id="output"></div>
+    <img src="" alt="" />
+    <script>
+      const csrfValue = `[[${_csrf.token}]]`;
+      // X 를 누르면 파일 삭제
+      document.querySelector("#output").addEventListener("click", (e) => {
+        e.preventDefault();
+        // console.log(e.target); // i 태그 가져옴
+        const removeDiv = e.target.closest("div");
+        console.log(removeDiv);
+
+        //a 태그 가져오기
+        // href 는 http://localhost:8080/upload/2024%5C01%5C16%2F5025907d-1cc6-456b-8737-77f430ea5482_movie15.jpg
+        const fileName = e.target.closest("a").getAttribute("href"); //2024%5C01%5C16%2Fc4022804-6a6d-47c8-8823-e2f32f730e4b_movie9.png
+        console.log(fileName);
+
+        const formData = new FormData();
+        formData.append("fileName", fileName);
+
+        fetch("removeFile", {
+          method: "post",
+          headers: {
+            "X-CSRF-TOKEN": csrfValue,
+          },
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("에러");
+            // 서버 쪽에서 true 넘어옴
+            return response.text();
+          })
+          .then((result) => {
+            console.log(result);
+
+            if (result) {
+              //해당 태그 제거
+              removeDiv.remove();
+            }
+          })
+          .catch((err) => console.log(err));
+      });
+
+      function showUploadImages(arr) {
+        console.log("showUploadImages ", arr);
+
+        const output = document.querySelector("#output");
+
+        let tags = "";
+        arr.forEach((element) => {
+          tags += `<div>`;
+          tags += `<img src="display?fileName=${element.thumbnailURL}">`;
+          tags += `<a href="${element.imageURL}"><i class="fa-solid fa-xmark"></i></a>`;
+          tags += `</div>`;
+        });
+        output.insertAdjacentHTML("beforeend", tags);
+      }
+
+      document.querySelector(".uploadBtn").addEventListener("click", () => {
+        // formData 객체 구성해서 폼에 첨부된 파일 업로드
+        let formData = new FormData();
+
+        const inputFile = document.querySelector("[name='uploadFiles']");
+        const files = inputFile.files;
+        console.log("files", files);
+
+        for (let index = 0; index < files.length; index++) {
+          console.log(files[index]);
+          formData.append("uploadFiles", files[index]);
+        }
+
+        // console.log(formData); 찍어봐야 안나옴
+        for (var value of formData.values()) {
+          console.log(value);
+        }
+
+        fetch("uploadAjax", {
+          method: "post",
+          //headers를 설정하지 않거나, headers:{} 비어 있는 상태로 보내기
+          headers: {
+            "X-CSRF-TOKEN": csrfValue,
+          },
+          body: formData,
+        })
+          .then((response) => {
+            if (!response.ok) throw new Error("에러");
+            return response.json();
+          })
+          .then((result) => {
+            console.log(result);
+
+            // 도착한 데이터를 화면에 보여주기
+            showUploadImages(result);
+          })
+          .catch((err) => console.log(err));
+      });
+    </script>
+  </body>
+</html>
