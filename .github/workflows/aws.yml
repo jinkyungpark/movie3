@@ -28,7 +28,7 @@ jobs:
           cache: maven
 
       - name: Set up application.properties
-        run: echo "${{ secrets.DATABASE_INFO }}" > base64 -d > ./src/main/resources/application.properties
+        run: echo "${{ secrets.DATABASE_INFO }}" > ./src/main/resources/application.properties
 
       - name: Build with Maven
         run: mvn -B package --file pom.xml
